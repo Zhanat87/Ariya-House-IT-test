@@ -8,9 +8,9 @@
 use Phalcon\Di\FactoryDefault;
 use Phalcon\Mvc\View;
 use Phalcon\Mvc\Url as UrlResolver;
-use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
 use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
 use Phalcon\Session\Adapter\Files as SessionAdapter;
+use \Phalcon\Http\Response;
 
 /**
  * The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
@@ -25,33 +25,6 @@ $di->setShared('url', function () use ($config) {
     $url->setBaseUri($config->application->baseUri);
 
     return $url;
-});
-
-/**
- * Setting up the view component
- */
-$di->setShared('view', function () use ($config) {
-
-    $view = new View();
-
-    $view->setViewsDir($config->application->viewsDir);
-
-    $view->registerEngines(array(
-        '.volt' => function ($view, $di) use ($config) {
-
-            $volt = new VoltEngine($view, $di);
-
-            $volt->setOptions(array(
-                'compiledPath' => $config->application->cacheDir,
-                'compiledSeparator' => '_'
-            ));
-
-            return $volt;
-        },
-        '.phtml' => 'Phalcon\Mvc\View\Engine\Php'
-    ));
-
-    return $view;
 });
 
 /**
@@ -83,3 +56,32 @@ $di->setShared('session', function () {
 
     return $session;
 });
+
+/*
+ * здесь надо добавить в контейнер свои экземпляры классов стандартных компонентов phalcon'а
+ * или свои какие-то экземпляры класса, т.к. это просто реализация контейнера
+ */
+$di->setShared(
+    "view",
+    function () {
+        $view = new View;
+        $view->disable();
+        return $view;
+    }
+);
+
+$di->setShared(
+    "router",
+    function () {
+        $router = new \Phalcon\Mvc\Router(false);
+        $router->removeExtraSlashes(true);
+        $router->setDefaultController('robots');
+        $router->addGet('/v1/api/robots', ['controller' => 'robots', 'action' => 'list']);
+        $router->addGet('/v1/api/robots/{id:[0-9]+}', ['controller' => 'robots', 'action' => 'findOneById']);
+        $router->addGet('/v1/api/robots/search/{name}', ['controller' => 'robots', 'action' => 'search']);
+        $router->addPost('/v1/api/robots', ['controller' => 'robots', 'action' => 'create']);
+        $router->addPut('/v1/api/robots/{id}', ['controller' => 'robots', 'action' => 'update']);
+        $router->addDelete('/v1/api/robots/{id}', ['controller' => 'robots', 'action' => 'delete']);
+        return $router;
+    }
+);
