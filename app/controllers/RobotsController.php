@@ -10,23 +10,14 @@
  * он всегда возвращает экземпляр объекта Response,
  * может показаться оверинжинирингом, но это для удобства,
  * его еще можно наворотить
- * можно еще базовые вещи вынести в базовый контроллер, например метод afterExecuteRoute и
- * назвать класс RestController
  *
  * в общем если приложение будет расти, то конечно можно наворачивать,
  * добавлять composer.json с namespace'ми и т.д.,
  * но здесь пока так все просто)
  * забыл еще миграцию сделать, но добавил дамп бд)
  */
-class RobotsController extends ControllerBase
+class RobotsController extends RestController
 {
-
-    public function afterExecuteRoute(\Phalcon\Mvc\Dispatcher $dispatcher)
-    {
-        $this->response->setContentType('application/json', 'UTF-8');
-        $this->response->setJsonContent($dispatcher->getReturnedValue());
-        $this->response->send();
-    }
 
     public function listAction()
     {
