@@ -10,13 +10,14 @@ class RobotsService
 
     public static function getAll()
     {
+        $response = new Response;
         try {
-            $response = new Response;
             $response->data = Robots::find()->toArray();
         } catch (Exception $e) {
             $response->setException($e);
+        } finally {
+            return $response->toArray();
         }
-        return $response->toArray();
     }
 
     public static function findByName($name)
@@ -34,8 +35,9 @@ class RobotsService
             ])->toArray();
         } catch (Exception $e) {
             $response->setException($e);
+        } finally {
+            return $response->toArray();
         }
-        return $response->toArray();
     }
 
     public static function findOneById($id)
@@ -45,8 +47,9 @@ class RobotsService
             $response->data = Robots::findFirst($id)->toArray();
         } catch (Exception $e) {
             $response->setException($e);
+        } finally {
+            return $response->toArray();
         }
-        return $response->toArray();
     }
 
     public static function delete($id)
@@ -56,8 +59,9 @@ class RobotsService
             $response->data = Robots::findFirst($id)->delete();
         } catch (Exception $e) {
             $response->setException($e);
+        } finally {
+            return $response->toArray();
         }
-        return $response->toArray();
     }
 
     public static function update($id, $data)
@@ -71,8 +75,9 @@ class RobotsService
             $response->data = $robot->update();
         } catch (Exception $e) {
             $response->setException($e);
+        } finally {
+            return $response->toArray();
         }
-        return $response->toArray();
     }
 
     public static function create($data)
@@ -87,8 +92,9 @@ class RobotsService
             $response->status = $response::STATUS_CREATED;
         } catch (Exception $e) {
             $response->setException($e);
+        } finally {
+            return $response->toArray();
         }
-        return $response->toArray();
     }
 
 }
