@@ -85,3 +85,5 @@ $di->setShared(
         return $router;
     }
 );
+
+$di->set('config', $config);

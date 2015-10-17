@@ -24,4 +24,8 @@ return new \Phalcon\Config(array(
         'helpersDir'    => APP_PATH . '/app/helpers/',
         'baseUri'        => 'http://ariya-house-it.test/',
     ),
+    "auth" => [
+        "username" => "user",
+        "password" => "test",
+    ],
 ));
